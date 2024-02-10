@@ -44,7 +44,7 @@ async function saveFile64OnDisk(base64Data, fileName) {
   const base64String = base64Data.replace(/^data:[^;]+;base64,/, '');
   const buffer = Buffer.from(base64String, 'base64');
 
-  // Validate file type using mime-types
+ 
   const detectedMimeType = mimeTypes.lookup(buffer);
 
   const fileExtension = path.extname(fileName).toLowerCase();
@@ -52,10 +52,10 @@ async function saveFile64OnDisk(base64Data, fileName) {
     throw new Error('Invalid file type. Only JPEG , JPG and PNG files are allowed.');
   }
 
-  // Generate unique filename
+ 
   const newFileName = uuidv4() + '_' + fileName;
 
-  // Construct file path
+
   const filePath = path.join(__dirname, '../uploads/personas', newFileName);
 
   fs.writeFileSync(filePath,buffer)
