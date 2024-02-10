@@ -1,5 +1,7 @@
 const pool = require("../../db");
 
+//servicios para obtener datos de la db respecto a grados
+
 class GradoService {
 
     constructor() {

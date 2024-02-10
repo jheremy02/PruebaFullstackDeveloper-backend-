@@ -1,5 +1,10 @@
 const pool = require("../../db");
 const boom = require("@hapi/boom")
+
+
+
+//servicios para obtener datos de la db respecto a personas
+
 class PersonaService {
     constructor() {
         this.connection=null
@@ -26,8 +31,20 @@ class PersonaService {
 
     async getPersonas () {
         try {
-            const [result] = await this.connection.query('SELECT * FROM persona',[])
+            const [result] = await this.connection.query('SELECT * FROM persona INNER JOIN grado on grado.nid_grado=persona.nid_grado',[])
             return result
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async getPersona(idPersona) {
+        try {
+            const [result] = await this.connection.query('SELECT * FROM persona INNER JOIN grado on grado.nid_grado=persona.nid_grado WHERE persona.nid_persona=?',[idPersona])
+            if (result.length<=0) {
+                throw new Error('Estudiante no encontrado')
+            }
+            return result[0]
         } catch (error) {
             throw error
         }

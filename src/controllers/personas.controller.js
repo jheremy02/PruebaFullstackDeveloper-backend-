@@ -22,7 +22,7 @@ const createPersona = async (req, res, next) => {
         if (cronogramas.length<=0) {
             throw new Error('Cronogramas no encontrados')
         }
-        console.log(cronogramas) ;
+        
         const currentDate = getCurrentDate();
         fileSaved=null
         if (photo &&name_photo) {
@@ -43,8 +43,10 @@ const createPersona = async (req, res, next) => {
                 }
             }));
 
+            const personaFound=await personaService.getPersona(personCreated.insertId)
+            
             await connection.commit();
-            res.json({ data: { id: personCreated.insertId, nom_persona, ape_pate_pers, ape_mate_pers, nid_grado, fecha_naci, foto_ruta:fileSaved }, success: true });
+            res.json({ data: { ...personaFound }, success: true });
         } catch (error) {
             await connection.rollback();
             throw error;
@@ -54,9 +56,9 @@ const createPersona = async (req, res, next) => {
 
     } catch (error) {
         await connection.rollback();
-        next(error); // Pass error for further handling
+        next(error); 
     } finally {
-        connection.release(); // Always release the connection
+        connection.release(); 
     }
 };
   

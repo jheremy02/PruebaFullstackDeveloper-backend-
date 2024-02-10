@@ -2,35 +2,63 @@
 const fs=require('fs')
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
+const mimeTypes = require('mime-types');
+
+
+//funcion que permite obtener la fecha actual en formato 'yyyy-mm-dd'
 function getCurrentDate() {
     const currentDate = new Date();
     
-    // Get year, month, and day
+   
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
     const day = String(currentDate.getDate()).padStart(2, '0');
     
-    // Form the 'YYYY-MM-DD' string
+
     const formattedDate = `${year}-${month}-${day}`;
     
     return formattedDate;
   }
 
-async function saveFile64OnDisk(base64Data,fileName) {
+
+  //funcion que recibe un bae64 lo convierte a binario y o almacena en disco
+/*
+  async function saveFile64OnDisk(base64Data,fileName) {
   
-  // Remove the data type prefix from the base64 string
   const base64String = base64Data.replace(/^data:[^;]+;base64,/, '');
 
-  // Convert Base64 to binary buffer
   const buffer = Buffer.from(base64String, 'base64');
 
   const newFileName=uuidv4()+'_'+fileName
-  // Create the path to save the file
+ 
   const filePath = path.join(__dirname, '../uploads/personas',newFileName);
 
-  // Write the buffer to the file
   fs.writeFileSync(filePath,buffer)
   return `/uploads/personas/`+newFileName
 }
+*/
+
+
+async function saveFile64OnDisk(base64Data, fileName) {
+  // Convert base64 string to buffer
+  const base64String = base64Data.replace(/^data:[^;]+;base64,/, '');
+  const buffer = Buffer.from(base64String, 'base64');
+
+  // Validate file type using mime-types
+  const detectedMimeType = mimeTypes.lookup(buffer);
+  if (!detectedMimeType || !['image/jpeg', 'image/png','image/jpg'].includes(detectedMimeType)) {
+    throw new Error('Invalid file type. Only JPEG , JPG and PNG files are allowed.');
+  }
+
+  // Generate unique filename
+  const newFileName = uuidv4() + '_' + fileName;
+
+  // Construct file path
+  const filePath = path.join(__dirname, '../uploads/personas', newFileName);
+
+  fs.writeFileSync(filePath,buffer)
+  return `/uploads/personas/`+newFileName
+}
+
   
   module.exports= {getCurrentDate,saveFile64OnDisk}

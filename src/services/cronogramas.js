@@ -1,5 +1,8 @@
 const pool = require("../../db");
 
+
+//servicios para obtener datos de la db respecto a cronogramas
+
 class CronogramaService {
     constructor () {
 
