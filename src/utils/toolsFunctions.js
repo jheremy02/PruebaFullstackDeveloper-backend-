@@ -46,7 +46,9 @@ async function saveFile64OnDisk(base64Data, fileName) {
 
   // Validate file type using mime-types
   const detectedMimeType = mimeTypes.lookup(buffer);
-  if (!detectedMimeType || !['image/jpeg', 'image/png','image/jpg'].includes(detectedMimeType)) {
+
+  const fileExtension = path.extname(fileName).toLowerCase();
+  if (!['.jpeg', '.png','.jpg'].includes(fileExtension)) {
     throw new Error('Invalid file type. Only JPEG , JPG and PNG files are allowed.');
   }
 
